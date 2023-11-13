@@ -2,13 +2,14 @@
   <el-table :data="tableData" style="width: 100%">
     <el-table-column v-for="column in newTableHeader" v-bind="column">
       <div v-if="column.innerHtml" v-html="column.innerHtml"></div>
+      <component v-if="column.component" :is="column.component"></component>
     </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUpdate } from "vue";
+import { ref, onMounted, onBeforeUpdate, markRaw } from "vue";
 // TODO 在初次使用Mapper的章节中，值类型应该定义为string
 export type Mapper<T> = {
   [P in keyof T as string]?: string | object;
@@ -45,6 +46,13 @@ const genNewTableHeader = () => {
         Reflect.get(column, "type") == "selection"
       ) {
         Reflect.set(column, "prop", key);
+      }
+      if (Reflect.has(column, "component")) {
+        Reflect.set(
+          column,
+          "component",
+          markRaw(Reflect.get(column, "component"))
+        );
       }
     }
   }

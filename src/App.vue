@@ -8,7 +8,8 @@
 
 <script lang="ts" setup>
 import CustomTable from "./components/custom-table/index.vue";
-import { onMounted, ref } from "vue";
+import CustomButton from "./components/custom-button/index.vue";
+import { onMounted, ref, h } from "vue";
 import { getData } from "./api/index";
 const tableData = ref([]);
 // 定义新的Header结构，key为column的prop/key，value为column的name
@@ -16,7 +17,9 @@ const tableHeaderMapper = {
   a: {
     label: "列a",
     width: "400px",
-    innerHtml: "<button>详情</button>",
+    // innerHtml: ,
+    // component: CustomButton,
+    component: h("div", { class: "bar", innerHTML: "hello" }),
   },
   b: "列b",
   c: "列c",

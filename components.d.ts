@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CustomButton: typeof import('./src/components/custom-button/index.vue')['default']
     CustomTable: typeof import('./src/components/custom-table/index.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElTable: typeof import('element-plus/es')['ElTable']
