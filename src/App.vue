@@ -13,7 +13,10 @@ import { getData } from "./api/index";
 const tableData = ref([]);
 // 定义新的Header结构，key为column的prop/key，value为column的name
 const tableHeaderMapper = {
-  a: "列a",
+  a: {
+    label: "列a",
+    width: "400px",
+  },
   b: "列b",
   c: "列c",
   d: "列d",
