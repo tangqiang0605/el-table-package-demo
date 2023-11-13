@@ -5,6 +5,9 @@
         <div v-if="typeof column.inner == 'string'" v-html="column.inner"></div>
         <component v-else :is="column.inner"></component>
       </div>
+      <div v-if="column.slotName">
+        <slot :name="column.slotName"></slot>
+      </div>
     </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
@@ -44,8 +47,10 @@ const genNewTableHeader = () => {
       // 设置默认的prop
       if (
         !Reflect.has(column, "prop") &&
-        Reflect.has(column, "type") &&
-        Reflect.get(column, "type") == "selection"
+        !(
+          Reflect.has(column, "type") &&
+          Reflect.get(column, "type") == "selection"
+        )
       ) {
         Reflect.set(column, "prop", key);
       }

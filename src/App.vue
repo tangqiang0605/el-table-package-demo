@@ -3,12 +3,17 @@
     :table-data="tableData"
     :table-header="tableHeaderMapper"
     v-loading="loading"
-  ></CustomTable>
+  >
+    <template #aaa>hello </template>
+    <template #bb>
+      <el-button>按钮</el-button>
+    </template>
+  </CustomTable>
 </template>
 
 <script lang="ts" setup>
 import CustomTable from "./components/custom-table/index.vue";
-import CustomButton from "./components/custom-button/index.vue";
+// import CustomButton from "./components/custom-button/index.vue";
 import { onMounted, ref, h } from "vue";
 import { getData } from "./api/index";
 const tableData = ref([]);
@@ -16,12 +21,12 @@ const tableData = ref([]);
 const tableHeaderMapper = {
   a: {
     label: "列a",
-    width: "400px",
-    // component: CustomButton,
-    inner: h("div", { class: "bar", innerHTML: "hello" }),
-    // inner: "<div>hellohtml</div>",
+    slotName: "aaa",
   },
-  b: "列b",
+  b: {
+    label: "bb",
+    slotName: "bb",
+  },
   c: "列c",
   d: "列d",
   e: "列e",
