@@ -1,5 +1,8 @@
 <template>
-  <CustomTable :table-data="tableData"></CustomTable>
+  <CustomTable
+    :table-data="tableData"
+    :table-header="tableHeaderMapper"
+  ></CustomTable>
 </template>
 
 <script lang="ts" setup>
@@ -18,4 +21,16 @@ const tableData = ref(
     i: "Tom",
   })
 );
+// 定义新的Header结构，key为column的prop/key，value为column的name
+const tableHeaderMapper = {
+  a: "列a",
+  b: "列b",
+  c: "列c",
+  d: "列d",
+  e: "列e",
+  f: "列f",
+  g: "列g",
+  h: "列h",
+  i: "列i",
+};
 </script>
