@@ -1,16 +1,12 @@
 <template>
-  <el-table :data="tableData" style="width: 100%">
-    <el-table-column
-      v-for="column in tableHeaders"
-      :key="column"
-      :prop="column"
-      :label="column + 'Name'"
-      width="180"
-    ></el-table-column>
-  </el-table>
+  <CustomTable
+    :table-data="tableData"
+    :table-headers="tableHeaders"
+  ></CustomTable>
 </template>
 
 <script lang="ts" setup>
+import CustomTable from "./components/custom-table/index.vue";
 const tableData = new Array(9).fill({
   a: "2016-05-03",
   b: "Tom",
