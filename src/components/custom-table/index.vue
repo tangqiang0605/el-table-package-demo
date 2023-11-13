@@ -1,8 +1,10 @@
 <template>
   <el-table :data="tableData" style="width: 100%">
     <el-table-column v-for="column in newTableHeader" v-bind="column">
-      <div v-if="column.innerHtml" v-html="column.innerHtml"></div>
-      <component v-if="column.component" :is="column.component"></component>
+      <div v-if="column.inner">
+        <div v-if="typeof column.inner == 'string'" v-html="column.inner"></div>
+        <component v-else :is="column.inner"></component>
+      </div>
     </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
