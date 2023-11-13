@@ -1,16 +1,14 @@
 <template>
   <el-table :data="tableData" style="width: 100%">
-    <el-table-column
-      v-for="column in newTableHeader"
-      v-bind="column"
-      v-html="'<span>This should be red.</span>'"
-    ></el-table-column>
+    <el-table-column v-for="column in newTableHeader" v-bind="column">
+      <div v-html="'<h1>hello</h1>'"></div>
+    </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUpdate } from "vue";
 // TODO 在初次使用Mapper的章节中，值类型应该定义为string
 export type Mapper<T> = {
   [P in keyof T as string]?: string | object;
@@ -22,31 +20,37 @@ const prop = defineProps<{
   tableHeader: Mapper<any>;
 }>();
 const newTableHeader = ref({});
-onMounted(() => {
+const genNewTableHeader = () => {
   newTableHeader.value = { ...prop.tableHeader };
   const rawAttr = prop.tableHeader;
   for (let key in rawAttr) {
-    let value = rawAttr[key];
-    if (typeof value === "string") {
+    let column = rawAttr[key];
+    if (typeof column === "string") {
       Reflect.set(newTableHeader.value, key, {
         key: key,
         prop: key,
-        label: value,
+        label: column,
       });
     }
 
-    if (typeof value === "object") {
+    if (typeof column === "object") {
       // 设置默认的key
-      if (!Reflect.has(value, "key")) {
-        Reflect.set(value, "key", key);
+      if (!Reflect.has(column, "key")) {
+        Reflect.set(column, "key", key);
       }
       // 设置默认的prop
-      if (!Reflect.has(value, "prop")) {
-        Reflect.set(value, "prop", key);
+      if (
+        !Reflect.has(column, "prop") &&
+        Reflect.has(column, "type") &&
+        Reflect.get(column, "type") == "selection"
+      ) {
+        Reflect.set(column, "prop", key);
       }
     }
   }
-});
+};
+onMounted(genNewTableHeader);
+onBeforeUpdate(genNewTableHeader);
 // const tableHeaders = computed(() => Object.keys(prop.tableData[0]));
 </script>
 
