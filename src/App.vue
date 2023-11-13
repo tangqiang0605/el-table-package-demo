@@ -7,20 +7,9 @@
 
 <script lang="ts" setup>
 import CustomTable from "./components/custom-table/index.vue";
-import { ref } from "vue";
-const tableData = ref(
-  new Array(9).fill({
-    a: "2016-05-03",
-    b: "Tom",
-    c: "No. 189, Grove St, Los Angeles",
-    d: "No. 189, Grove St, Los Angeles",
-    e: "2016-05-03",
-    f: "Tom",
-    g: "No. 189, Grove St, Los Angeles",
-    h: "2016-05-03",
-    i: "Tom",
-  })
-);
+import { onMounted, ref } from "vue";
+import { getData } from "./api/index";
+const tableData = ref([]);
 // 定义新的Header结构，key为column的prop/key，value为column的name
 const tableHeaderMapper = {
   a: "列a",
@@ -33,4 +22,9 @@ const tableHeaderMapper = {
   h: "列h",
   i: "列i",
 };
+onMounted(() => {
+  getData().then((res: any) => {
+    tableData.value = res.data;
+  });
+});
 </script>
