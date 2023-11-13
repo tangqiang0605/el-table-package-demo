@@ -17,9 +17,9 @@ const tableHeaderMapper = {
   a: {
     label: "列a",
     width: "400px",
-    // innerHtml: ,
     // component: CustomButton,
     component: h("div", { class: "bar", innerHTML: "hello" }),
+    innerHtml: "<div>hellohtml</div>",
   },
   b: "列b",
   c: "列c",
