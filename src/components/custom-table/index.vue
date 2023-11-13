@@ -11,10 +11,13 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  tableData: Array<any>,
-  tableHeaders: Array<any>,
-});
+import { computed } from "vue";
+
+const prop = defineProps<{
+  // 注意，传入的参数都会toRaw作为prop的属性，只有prop是响应式的
+  tableData: Array<any>;
+}>();
+const tableHeaders = computed(() => Object.keys(prop.tableData[0]));
 </script>
 
 <style scoped></style>
