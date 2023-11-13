@@ -1,7 +1,7 @@
 <template>
   <el-table :data="tableData" style="width: 100%">
     <el-table-column v-for="column in newTableHeader" v-bind="column">
-      <div v-html="'<h1>hello</h1>'"></div>
+      <div v-if="column.innerHtml" v-html="column.innerHtml"></div>
     </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
@@ -19,7 +19,7 @@ const prop = defineProps<{
   tableData: Array<any>;
   tableHeader: Mapper<any>;
 }>();
-const newTableHeader = ref({});
+const newTableHeader = ref<any>({});
 const genNewTableHeader = () => {
   newTableHeader.value = { ...prop.tableHeader };
   const rawAttr = prop.tableHeader;
