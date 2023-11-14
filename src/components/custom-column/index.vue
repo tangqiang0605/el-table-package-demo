@@ -1,19 +1,20 @@
 <template>
   <el-table-column v-for="column in newTableHeader" v-bind="column">
-    <template #default="scope">
-      <div v-if="column.inner">
+    <!-- <template #default="scope"> -->
+    <!-- <div v-if="column.inner">
         <div v-if="typeof column.inner == 'string'" v-html="column.inner"></div>
         <component v-else :is="column.inner"></component>
       </div>
       <div v-if="column.slotName">
         <slot :name="column.slotName" :item="scope.row"></slot>
-      </div>
-    </template>
-    <template #column></template>
+      </div> -->
+    <!-- </template> -->
+    <!-- <template ></template> -->
+    <!-- <template #column></template> -->
     <!-- 外部分割定义，插槽-列 -->
-    <!-- <template v-for="slot in Object.keys(slots || {})" #[slot]>
-      <slot :name="slot"></slot>
-    </template> -->
+    <template v-for="(value, key) in column.slot" #[key]="scope">
+      <slot :name="`${key}-${value}`" v-bind="scope"></slot>
+    </template>
   </el-table-column>
   <!-- </div> -->
 </template>
@@ -34,7 +35,7 @@ const prop = defineProps<{
 // defineSlots<{
 //   default(): any;
 // }>();
-const slot = useSlots();
+const slots = useSlots();
 const newTableHeader = ref<any>({});
 const genNewTableHeader = () => {
   newTableHeader.value = { ...prop.tableHeader };
@@ -49,6 +50,7 @@ const genNewTableHeader = () => {
       });
     }
 
+    // 其实此时一定是对象了
     if (typeof column === "object") {
       // 设置默认的key
       if (!Reflect.has(column, "key")) {
@@ -74,15 +76,32 @@ const genNewTableHeader = () => {
           markRaw(Reflect.get(column, "component"))
         );
       }
-      if (Reflect.has(column, "slotName")) {
-        if (Reflect.has(slot, column.slotName)) {
-        } else {
-          console.warn("custom-column：您定义了slotName却没有使用");
-          Reflect.set(column, "slotName", undefined);
-        }
+      // TODO 兼容
+      // if (Reflect.has(column, "slotName")) {
+      //   if (Reflect.has(slots, Reflect.get(column, "slotName"))) {
+      //   } else {
+      //     console.warn("custom-column：您定义了slotName却没有使用");
+      //     Reflect.set(column, "slotName", undefined);
+      //   }
+      // }
+
+      // console.log(Object.keys(slots));
+      const slotKeys = Object.keys(slots);
+      if (!Reflect.has(column, "slot")) {
+        Reflect.set(column, "slot", {});
       }
+      for (let key of slotKeys) {
+        const res = key.match(/^(\S+)-(\S+)/);
+        if (res && res[2] == Reflect.get(column, "key")) {
+          // 假设肯定没有slot参数
+          Reflect.set(Reflect.get(column, "slot"), res[1], res[2]);
+        }
+        // 查找不到则res为null
+      }
+      // if()
     }
   }
+  console.log(newTableHeader.value);
 };
 onMounted(genNewTableHeader);
 onBeforeUpdate(genNewTableHeader);
