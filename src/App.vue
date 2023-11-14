@@ -1,12 +1,10 @@
 <template>
   <CustomTable :table-data="tableData" v-loading="loading">
     <CustomColumn :table-header="tableHeaderMapper">
-      aaa
+      <!-- aaa -->
       <!-- 需要解构使用 -->
-      <template #default-b="scope"> hello{{ scope.$index }} </template>
-      <template #header-a>word</template>
+      <template #default-a="scope"> hello{{ scope.$index }} </template>
     </CustomColumn>
-    <!-- hhh -->
     <template #empty>自定义空状态</template>
     <!-- <template #append> 空 </template> -->
   </CustomTable>
@@ -23,6 +21,7 @@ const tableData = ref([]);
 const tableHeaderMapper = {
   a: {
     label: "列a",
+    inner: "<h1>hello</h1>",
     // slotName: "aaa",
   },
   b: {

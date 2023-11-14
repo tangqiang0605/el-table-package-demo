@@ -1,22 +1,23 @@
 <template>
   <el-table-column v-for="column in newTableHeader" v-bind="column">
-    <!-- <template #default="scope"> -->
-    <!-- <div v-if="column.inner">
+    <template v-for="(value, key) in column.slot" #[key]="scope">
+      <slot :name="value" v-bind="scope">
+        <div v-if="column.inner && String(key) == 'default'">
+          <div
+            v-if="typeof column.inner == 'string'"
+            v-html="column.inner"
+          ></div>
+          <component v-else :is="column.inner"></component>
+        </div>
+      </slot>
+    </template>
+    <template v-if="!column.slot" #default>
+      <div v-if="column.inner">
         <div v-if="typeof column.inner == 'string'" v-html="column.inner"></div>
         <component v-else :is="column.inner"></component>
       </div>
-      <div v-if="column.slotName">
-        <slot :name="column.slotName" :item="scope.row"></slot>
-      </div> -->
-    <!-- </template> -->
-    <!-- <template ></template> -->
-    <!-- <template #column></template> -->
-    <!-- 外部分割定义，插槽-列 -->
-    <template v-for="(value, key) in column.slot" #[key]="scope">
-      <slot :name="value" v-bind="scope"></slot>
     </template>
   </el-table-column>
-  <!-- </div> -->
 </template>
 
 <script setup lang="ts">
@@ -70,30 +71,19 @@ const genNewTableHeader = () => {
           markRaw(Reflect.get(column, "component"))
         );
       }
-      // TODO 兼容
-      // if (Reflect.has(column, "slotName")) {
-      //   if (Reflect.has(slots, Reflect.get(column, "slotName"))) {
-      //   } else {
-      //     console.warn("custom-column：您定义了slotName却没有使用");
-      //     Reflect.set(column, "slotName", undefined);
-      //   }
-      // }
 
-      // console.log(Object.keys(slots));
       const slotKeys = Object.keys(slots);
 
       for (let key of slotKeys) {
         const res = key.match(/^(\S+)-(\S+)/);
+        // 查找不到则res为null
         if (res && res[2] == Reflect.get(column, "key")) {
           if (!Reflect.has(column, "slot")) {
             Reflect.set(column, "slot", {});
           }
-          // TODO 做兼容vhtml和h函数
           Reflect.set(Reflect.get(column, "slot"), res[1], res[0]);
         }
-        // 查找不到则res为null
       }
-      // if()
     }
   }
   console.log(newTableHeader.value);
