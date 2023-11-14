@@ -1,85 +1,32 @@
 <template>
   <el-table :data="tableData" style="width: 100%">
-    <!-- <el-table-column > -->
-
-    <!-- </el-table-column> -->
-    <el-table-column v-for="column in newTableHeader" v-bind="column">
-      <template #default="scope">
-        <div v-if="column.inner">
-          <div
-            v-if="typeof column.inner == 'string'"
-            v-html="column.inner"
-          ></div>
-          <component v-else :is="column.inner"></component>
-        </div>
-        <!-- {{ scope.row }} -->
-        <!-- {{ scope.item }} -->
-        <div v-if="column.slotName">
-          <slot :name="column.slotName" :item="scope.row"></slot>
-        </div>
-      </template>
-    </el-table-column>
+    <template v-for="slot in Object.keys(slots)" #[slot]>
+      <slot :name="slot"></slot>
+    </template>
   </el-table>
-  <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
+  <!-- <component :is="slotsComp[0]"></component> -->
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUpdate, markRaw } from "vue";
-// TODO 在初次使用Mapper的章节中，值类型应该定义为string
-export type Mapper<T> = {
-  [P in keyof T as string]?: string | object;
-};
+// import { onMounted, useSlots, ref, h } from "vue";
+import { onMounted, useSlots } from "vue";
 
-const prop = defineProps<{
-  // 注意，传入的参数都会toRaw作为prop的属性，只有prop是响应式的
+defineProps<{
   tableData: Array<any>;
-  tableHeader: Mapper<any>;
 }>();
-const newTableHeader = ref<any>({});
-const genNewTableHeader = () => {
-  newTableHeader.value = { ...prop.tableHeader };
-  const rawAttr = prop.tableHeader;
-  for (let key in rawAttr) {
-    let column = rawAttr[key];
-    if (typeof column === "string") {
-      Reflect.set(newTableHeader.value, key, {
-        key: key,
-        prop: key,
-        label: column,
-      });
-    }
+const slots = useSlots();
 
-    if (typeof column === "object") {
-      // 设置默认的key
-      if (!Reflect.has(column, "key")) {
-        Reflect.set(column, "key", key);
-      }
-      if (!Reflect.has(column, "label")) {
-        Reflect.set(column, "label", key);
-      }
-      // 设置默认的prop
-      if (
-        !Reflect.has(column, "prop") &&
-        !(
-          Reflect.has(column, "type") &&
-          Reflect.get(column, "type") == "selection"
-        )
-      ) {
-        Reflect.set(column, "prop", key);
-      }
-      if (Reflect.has(column, "component")) {
-        Reflect.set(
-          column,
-          "component",
-          markRaw(Reflect.get(column, "component"))
-        );
-      }
-    }
-  }
-};
-onMounted(genNewTableHeader);
-onBeforeUpdate(genNewTableHeader);
-// const tableHeaders = computed(() => Object.keys(prop.tableData[0]));
+onMounted(() => {
+  // const keys = Object.keys(slots);
+  // console.log(Object.keys(slots));
+  // slotsComp.value = [];
+  // for (let key of keys) {
+  //   slotsComp.value.push(h("div", slots[key]()));
+  //   // console.log(slots[key]);
+  // }
+  // // slotsComp.value[0] = h("div", );
+  // console.log(slotsComp);
+});
 </script>
 
 <style scoped></style>

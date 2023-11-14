@@ -13,6 +13,7 @@ export function getData() {
           h: "2016-05-03",
           i: "Tom",
         }),
+        data: [],
       });
     }, 20);
   });

@@ -1,17 +1,17 @@
 <template>
-  <CustomTable
-    :table-data="tableData"
-    :table-header="tableHeaderMapper"
-    v-loading="loading"
-  >
-    <template #aaa="row">
-      <button @click="console.log(row)">点击</button>
-    </template>
+  <CustomTable :table-data="tableData" v-loading="loading">
+    <CustomColumn :table-header="tableHeaderMapper">
+      <template #aaa> hello </template>
+    </CustomColumn>
+    <!-- hhh -->
+    <template #empty>自定义空状态</template>
+    <!-- <template #append> 空 </template> -->
   </CustomTable>
 </template>
 
 <script lang="ts" setup>
 import CustomTable from "./components/custom-table/index.vue";
+import CustomColumn from "./components/custom-column/index.vue";
 // import CustomButton from "./components/custom-button/index.vue";
 import { onMounted, ref } from "vue";
 import { getData } from "./api/index";
