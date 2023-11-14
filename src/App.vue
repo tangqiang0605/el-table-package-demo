@@ -4,9 +4,8 @@
     :table-header="tableHeaderMapper"
     v-loading="loading"
   >
-    <template #aaa>hello </template>
-    <template #bb>
-      <el-button>按钮</el-button>
+    <template #aaa="row">
+      <button @click="console.log(row)">点击</button>
     </template>
   </CustomTable>
 </template>
@@ -14,7 +13,7 @@
 <script lang="ts" setup>
 import CustomTable from "./components/custom-table/index.vue";
 // import CustomButton from "./components/custom-button/index.vue";
-import { onMounted, ref, h } from "vue";
+import { onMounted, ref } from "vue";
 import { getData } from "./api/index";
 const tableData = ref([]);
 // 定义新的Header结构，key为column的prop/key，value为column的name
@@ -25,7 +24,7 @@ const tableHeaderMapper = {
   },
   b: {
     label: "bb",
-    slotName: "bb",
+    // slotName: "bb",
   },
   c: "列c",
   d: "列d",

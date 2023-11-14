@@ -1,13 +1,23 @@
 <template>
   <el-table :data="tableData" style="width: 100%">
+    <!-- <el-table-column > -->
+
+    <!-- </el-table-column> -->
     <el-table-column v-for="column in newTableHeader" v-bind="column">
-      <div v-if="column.inner">
-        <div v-if="typeof column.inner == 'string'" v-html="column.inner"></div>
-        <component v-else :is="column.inner"></component>
-      </div>
-      <div v-if="column.slotName">
-        <slot :name="column.slotName"></slot>
-      </div>
+      <template #default="scope">
+        <div v-if="column.inner">
+          <div
+            v-if="typeof column.inner == 'string'"
+            v-html="column.inner"
+          ></div>
+          <component v-else :is="column.inner"></component>
+        </div>
+        <!-- {{ scope.row }} -->
+        <!-- {{ scope.item }} -->
+        <div v-if="column.slotName">
+          <slot :name="column.slotName" :item="scope.row"></slot>
+        </div>
+      </template>
     </el-table-column>
   </el-table>
   <!-- <div v-for="key in tableHeader">{{ key }}</div> -->
@@ -43,6 +53,9 @@ const genNewTableHeader = () => {
       // 设置默认的key
       if (!Reflect.has(column, "key")) {
         Reflect.set(column, "key", key);
+      }
+      if (!Reflect.has(column, "label")) {
+        Reflect.set(column, "label", key);
       }
       // 设置默认的prop
       if (
