@@ -13,7 +13,7 @@
     <!-- <template #column></template> -->
     <!-- 外部分割定义，插槽-列 -->
     <template v-for="(value, key) in column.slot" #[key]="scope">
-      <slot :name="`${key}-${value}`" v-bind="scope"></slot>
+      <slot :name="value" v-bind="scope"></slot>
     </template>
   </el-table-column>
   <!-- </div> -->
@@ -25,16 +25,10 @@ import { ref, onMounted, onBeforeUpdate, markRaw, useSlots } from "vue";
 export type Mapper<T> = {
   [P in keyof T as string]?: string | object;
 };
-import { valueEquals } from "element-plus";
 
 const prop = defineProps<{
-  // 注意，传入的参数都会toRaw作为prop的属性，只有prop是响应式的
-  // tableData: Array<any>;
   tableHeader: Mapper<any>;
 }>();
-// defineSlots<{
-//   default(): any;
-// }>();
 const slots = useSlots();
 const newTableHeader = ref<any>({});
 const genNewTableHeader = () => {
@@ -87,14 +81,15 @@ const genNewTableHeader = () => {
 
       // console.log(Object.keys(slots));
       const slotKeys = Object.keys(slots);
-      if (!Reflect.has(column, "slot")) {
-        Reflect.set(column, "slot", {});
-      }
+
       for (let key of slotKeys) {
         const res = key.match(/^(\S+)-(\S+)/);
         if (res && res[2] == Reflect.get(column, "key")) {
-          // 假设肯定没有slot参数
-          Reflect.set(Reflect.get(column, "slot"), res[1], res[2]);
+          if (!Reflect.has(column, "slot")) {
+            Reflect.set(column, "slot", {});
+          }
+          // TODO 做兼容vhtml和h函数
+          Reflect.set(Reflect.get(column, "slot"), res[1], res[0]);
         }
         // 查找不到则res为null
       }

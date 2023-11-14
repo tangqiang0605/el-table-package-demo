@@ -3,7 +3,7 @@
     <CustomColumn :table-header="tableHeaderMapper">
       aaa
       <!-- 需要解构使用 -->
-      <template #default-a="scope"> hello{{ scope.$index }} </template>
+      <template #default-b="scope"> hello{{ scope.$index }} </template>
       <template #header-a>word</template>
     </CustomColumn>
     <!-- hhh -->
